@@ -6,8 +6,12 @@
 
 int main(int argc, char* arv[])
 {
+	if (!identify())
+	{
+		// 如果认证失败，直接退出程序。
+		return 1;
+	}
 	
-
 	//创建链表
 	List list = { 0 };
 	//内存设置
@@ -24,6 +28,8 @@ int main(int argc, char* arv[])
 			isRunning = false;
 			system("cls");
 			printf("已退出学生成绩管理系统\n");
+			system("pause");
+			return 1;
 			break;
 		case Entry:
 			entryStudent(&list);

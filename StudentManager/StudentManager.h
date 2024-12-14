@@ -4,17 +4,20 @@
 #define Max_length 50
 #define true 1
 #define false -1
+#define Password "1"
+#define Manager "1"
 
 /*学生结构*/
 typedef struct Student
 {
 	unsigned long long number;	//学号
-	char name[Max_length];				//姓名
-	char class[Max_length];				//班级
-	float math;
-	float english;
-	float computer;
-	float average;				//还未做
+	char name[Max_length];		//姓名
+	char class[Max_length];		//班级
+	float math;					//数学成绩
+	float english;				//英语成绩
+	float computer;				//计算机成绩
+	float sum;					//三科总成绩
+	float average;				//三科平均分
 }Student;
 
 /*节点 Node*/
@@ -76,4 +79,5 @@ void rankStudent(List* list);
 /*班级成绩分析*/
 void analyseStudent(List* list);
 
-
+/*身份验证*/
+int identify();

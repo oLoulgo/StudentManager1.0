@@ -5,7 +5,7 @@
 
 int class_count = 0; // 初始化已记录的班级数量
 
-static Node* CreateNode()	//为创建节点写一个函数，静态内部的？，因为这个代码会复用多次（entryStudent和readStudent）,使代码更简洁
+static Node* CreateNode()	//为创建节点写一个函数，静态内部的，因为这个代码会复用多次（entryStudent和readStudent）,使代码更简洁，不放在头文件中声明是为了减少不必要的全局暴露
 {
 	//创建节点
 	Node* node = malloc(sizeof(Node));
@@ -17,8 +17,6 @@ static Node* CreateNode()	//为创建节点写一个函数，静态内部的？，因为这个代码会复
 	node->next = NULL;
 	return node;
 }
-
-
 
 int menu()
 {
@@ -63,7 +61,8 @@ void entryStudent(List* list)
 	printf("请输入学生计算机成绩>");
 	scanf("%f", &node->stu.computer);
 
-	node->stu.average = (node->stu.math + node->stu.english + node->stu.computer) /3.0f;
+	node->stu.sum = node->stu.math + node->stu.english + node->stu.computer;
+	node->stu.average = node->stu.sum /3.0f;
 
 	//插入到链表中
 	node->next = list->front;	//头插：新结点指向原链表最后一个，front指向新结点
@@ -83,7 +82,7 @@ void printStudent(List* list)
 	case 1:
 	{
 		printf("*-----------------------------------------------------------------------*\n");
-		printf("*	学号	姓名	班级		数学	英语	计算机	平均成绩*\n");
+		printf("*学号	姓名	班级		数学	英语	计算机	平均分	总成绩  *\n");
 		printf("*-----------------------------------------------------------------------*\n");
 
 		//遍历链表	//04  4m
@@ -96,8 +95,8 @@ void printStudent(List* list)
 
 		while (curNode != NULL)
 		{
-			printf("* %llu\t\t%s\t%s\t\t%.1lf\t%.1lf\t%.1lf\t%.2lf\t*\n", curNode->stu.number, curNode->stu.name, curNode->stu.class,
-				curNode->stu.math, curNode->stu.english, curNode->stu.computer, curNode->stu.average);
+			printf("*%llu\t%s\t%s\t\t%.1lf\t%.1lf\t%.1lf\t%.2lf\t%.2lf  *\n", curNode->stu.number, curNode->stu.name, curNode->stu.class,
+				curNode->stu.math, curNode->stu.english, curNode->stu.computer, curNode->stu.average,curNode->stu.sum);
 			curNode = curNode->next;
 		}
 		break;
@@ -107,7 +106,7 @@ void printStudent(List* list)
 		printf("请输入班级名字>");
 		scanf("%s", className);
 		printf("*-----------------------------------------------------------------------*\n");
-		printf("*	学号	姓名	班级		数学	英语	计算机	平均成绩*\n");
+		printf("*学号	姓名	班级		数学	英语	计算机	平均分	总成绩  *\n");
 		printf("*-----------------------------------------------------------------------*\n");
 
 		Node* curNode = list->front;
@@ -120,8 +119,8 @@ void printStudent(List* list)
 		{
 			if (strcmp(curNode->stu.class,className)==0)
 			{
-				printf("* %llu\t\t%s\t%s\t\t%.1lf\t%.1lf\t%.1lf\t%.2lf\t*\n", curNode->stu.number, curNode->stu.name, curNode->stu.class,
-					curNode->stu.math, curNode->stu.english, curNode->stu.computer, curNode->stu.average);
+				printf("*%llu\t%s\t%s\t\t%.1lf\t%.1lf\t%.1lf\t%.2lf\t%.2lf  *\n", curNode->stu.number, curNode->stu.name, curNode->stu.class,
+					curNode->stu.math, curNode->stu.english, curNode->stu.computer, curNode->stu.average, curNode->stu.sum);
 			}
 			curNode = curNode->next;
 		}
@@ -146,8 +145,8 @@ void saveStudentHuman(List* list)
 	Node* curNode = list->front;
 	while (curNode != NULL)
 	{
-		fprintf(fp,"%llu\t%s\t%s\t%.lf\t%.lf\t%.lf\t%.lf\n", curNode->stu.number, curNode->stu.name, curNode->stu.class,
-			curNode->stu.math, curNode->stu.english, curNode->stu.computer, curNode->stu.average);
+		fprintf(fp,"%llu\t%s\t%s\t%.lf\t%.lf\t%.lf\t%.lf\t%.lf\n", curNode->stu.number, curNode->stu.name, curNode->stu.class,
+			curNode->stu.math, curNode->stu.english, curNode->stu.computer, curNode->stu.average,curNode->stu.sum);
 		curNode = curNode->next;
 	}
 
@@ -171,8 +170,8 @@ void readStudentHuman(List* list)
 		Node* node = CreateNode();
 		if (!node)
 			break;
-		fscanf(fp,"%llu\t%s\t%s\t%f\t%f\t%f\t%f\n", &node->stu.number, node->stu.name, node->stu.class,
-			&node->stu.math, &node->stu.english, &node->stu.computer, &node->stu.average);	//为什么%.lf改成了%f	/原有if （7 ！=）
+		fscanf(fp,"%llu\t%s\t%s\t%f\t%f\t%f\t%f\t%f\n", &node->stu.number, node->stu.name, node->stu.class,
+			&node->stu.math, &node->stu.english, &node->stu.computer, &node->stu.average,&node->stu.sum);	//为什么%.lf改成了%f	/原有if （7 ！=）
 		//{
 		//	free(node);
 		//	break;
@@ -211,10 +210,10 @@ void findStudent(List* list)
 		if (strcmp(curNode->stu.name, buffer) == 0 || curNode->stu.number == number)
 		{
 			printf("*-----------------------------------------------------------------------*\n");
-			printf("*	学号	姓名	班级		数学	英语	计算机	平均成绩*\n");
+			printf("*学号	姓名	班级		数学	英语	计算机	平均分	总成绩  *\n");
 			printf("*-----------------------------------------------------------------------*\n");
-			printf("* %llu\t\t%s\t%s\t\t%.1lf\t%.1lf\t%.1lf\t%.2lf\t*\n", curNode->stu.number, curNode->stu.name, curNode->stu.class,
-				curNode->stu.math, curNode->stu.english, curNode->stu.computer, curNode->stu.average);
+			printf("*%llu\t%s\t%s\t\t%.1lf\t%.1lf\t%.1lf\t%.2lf\t%.2lf  *\n", curNode->stu.number, curNode->stu.name, curNode->stu.class,
+				curNode->stu.math, curNode->stu.english, curNode->stu.computer, curNode->stu.average, curNode->stu.sum);
 			printf("*-----------------------------------------------------------------------*\n");
 			break;
 		}
@@ -262,10 +261,9 @@ void alterStudent(List* list)	//先查找再修改
 			printf("\n");
 			printf("			    该学生修改前信息				\n");
 			printf("*-----------------------------------------------------------------------*\n");
-			printf("*	学号	姓名	班级		数学	英语	计算机	平均成绩*\n");
-			
-			printf("* %llu\t\t%s\t%s\t\t%.1lf\t%.1lf\t%.1lf\t%.2lf\t*\n", curNode->stu.number, curNode->stu.name, curNode->stu.class,
-				curNode->stu.math, curNode->stu.english, curNode->stu.computer, curNode->stu.average);
+			printf("*学号	姓名	班级		数学	英语	计算机	平均分	总成绩  *\n");
+			printf("*%llu\t%s\t%s\t\t%.1lf\t%.1lf\t%.1lf\t%.2lf\t%.2lf  *\n", curNode->stu.number, curNode->stu.name, curNode->stu.class,
+				curNode->stu.math, curNode->stu.english, curNode->stu.computer, curNode->stu.average, curNode->stu.sum);
 			printf("\n");
 			printf("请选择要修改内容>");
 			scanf("%d", &i);
@@ -290,17 +288,20 @@ void alterStudent(List* list)	//先查找再修改
 					case 4:
 						printf("把数学改成：");
 						scanf("%f", &curNode->stu.math);
-						curNode->stu.average = (curNode->stu.math + curNode->stu.english + curNode->stu.computer) / 3.0f;
+						curNode->stu.sum = curNode->stu.math + curNode->stu.english + curNode->stu.computer;
+						curNode->stu.average = curNode->stu.sum/ 3.0f;
 						break;
 					case 5:
 						printf("把英语改成：");
 						scanf("%f", &curNode->stu.english);
-						curNode->stu.average = (curNode->stu.math + curNode->stu.english + curNode->stu.computer) / 3.0f;
+						curNode->stu.sum = curNode->stu.math + curNode->stu.english + curNode->stu.computer;
+						curNode->stu.average = curNode->stu.sum / 3.0f;
 						break;
 					case 6:
 						printf("把计算机改成：");
 						scanf("%f", &curNode->stu.computer);
-						curNode->stu.average = (curNode->stu.math + curNode->stu.english + curNode->stu.computer) / 3.0f;
+						curNode->stu.sum = curNode->stu.math + curNode->stu.english + curNode->stu.computer;
+						curNode->stu.average = curNode->stu.sum / 3.0f;
 						break;
 					case 0:
 						isRunning2 = false;
@@ -332,10 +333,10 @@ void alterStudent(List* list)	//先查找再修改
 
 		printf("			    该学生修改后信息				\n");
 		printf("*-----------------------------------------------------------------------*\n");
-		printf("*	学号	姓名	班级		数学	英语	计算机	平均成绩*\n");
+		printf("*学号	姓名	班级		数学	英语	计算机	平均分	总成绩  *\n");
 
-		printf("* %llu\t%s\t%s\t%.1lf\t%.1lf\t%.1lf\t%.2lf*\n", curNode->stu.number, curNode->stu.name, curNode->stu.class,
-			curNode->stu.math, curNode->stu.english, curNode->stu.computer, curNode->stu.average);
+		printf("*%llu\t%s\t%s\t\t%.1lf\t%.1lf\t%.1lf\t%.2lf\t%.2lf  *\n", curNode->stu.number, curNode->stu.name, curNode->stu.class,
+			curNode->stu.math, curNode->stu.english, curNode->stu.computer, curNode->stu.average, curNode->stu.sum);
 	}
 
 }
@@ -397,23 +398,26 @@ void rankStudent(List* list) {
 	}  // 如果链表为空或只有一个节点，不需要排序
 
 	Node* sorted = NULL;  // 排序后的链表
-	Node* current = list->front;
+	Node* curNode = list->front;	//current
 
-	while (current != NULL) {
-		Node* next = current->next;
-		if (sorted == NULL || (current->stu.math + current->stu.english + current->stu.computer) >= (sorted->stu.math + sorted->stu.english + sorted->stu.computer)) {
-			current->next = sorted;
-			sorted = current;
+	while (curNode != NULL) {
+		Node* next = curNode->next;
+		if (sorted == NULL || (curNode->stu.math + curNode->stu.english + curNode->stu.computer) >= (sorted->stu.math + sorted->stu.english + sorted->stu.computer)) 
+		{
+			curNode->next = sorted;
+			sorted = curNode;
 		}
-		else {
+		else 
+		{
 			Node* temp = sorted;
-			while (temp->next != NULL && (current->stu.math + current->stu.english + current->stu.computer) < (temp->next->stu.math + temp->next->stu.english + temp->next->stu.computer)) {
+			while (temp->next != NULL && (curNode->stu.math + curNode->stu.english + curNode->stu.computer) < (temp->next->stu.math + temp->next->stu.english + temp->next->stu.computer)) 
+			{
 				temp = temp->next;
 			}
-			current->next = temp->next;
-			temp->next = current;
+			curNode->next = temp->next;
+			temp->next = curNode;
 		}
-		current = next;
+		curNode = next;
 	}
 
 	list->front = sorted;
@@ -503,4 +507,43 @@ void analyseStudent(List* list)
 	}
 	else
 		printf("系统中无该班级学生\n");
+}
+
+int identify(void)
+{
+
+	printf("*-----------------------------------------------------------------------*\n");
+	printf("*			   学生成绩管理系统				*\n");
+	printf("*-----------------------------------------------------------------------*\n");
+	printf("*				登录界面				*\n");
+	printf("*-----------------------------------------------------------------------*\n");
+		char inputManager[Max_length];
+		char inputPassword[Max_length];
+		int chances = 3;
+
+		while (chances > 0) {
+			printf("*请输入用户名:");
+			scanf("%s", inputManager);
+			printf("*请输入密码: ");
+			scanf("%s", inputPassword);
+
+			if (strcmp(inputManager, Manager) == 0 && strcmp(inputPassword, Password) == 0) {
+				printf("身份验证成功，系统登录中...\n");
+				system("pause");
+				system("cls");
+				return 1; // 登录成功
+			}
+			else {
+				chances--;
+				if (chances > 0) {
+					printf("用户名或密码错误，请重试。你还剩 %d 次尝试。\n", chances);
+				}
+				else {
+					printf("你已经用完了所有的尝试次数。系统将退出。\n");
+					return 0; // 登录失败
+				}
+			}
+		}
+
+		return 0;
 }
