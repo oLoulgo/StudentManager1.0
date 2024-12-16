@@ -4,6 +4,7 @@
 #include <string.h>
 #include "StudentManager.h"		//以下代码要用到头文件StudentManager.h中的menu，因此把该头文件包含进来
 
+
 int main(int argc, char* arv[])
 {
 	if (!identify())
@@ -13,15 +14,13 @@ int main(int argc, char* arv[])
 	}
 	
 	//创建链表
-	List list = { 0 };
+	List list = { 0 };	//把front设为NULL，size为0
 	//内存设置
-	memset(&list, 0, sizeof(List));
-	//02 10m	//从list的地址开始，将接下来sizeof(s)个字节全部设为0，确保结构体初始化，也防止野指针出现
+	memset(&list, 0, sizeof(List));		//从list的地址开始，将接下来sizeof(s)个字节全部设为0，确保结构体初始化，也防止野指针出现
 
 	int isRunning = true;
 	while (isRunning)	//实现多次功能选择，而非选择一次就退出
 	{
-
 		switch (menu())	//增加代码可读性
 		{
 		case Quit:
@@ -61,7 +60,6 @@ int main(int argc, char* arv[])
 
 		default:
 			printf("输入的选项错误\n");
-			//isRunning = false;	//但如何再进入菜单呢
 			break;
 		}
 

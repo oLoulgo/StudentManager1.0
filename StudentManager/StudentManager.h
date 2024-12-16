@@ -1,4 +1,4 @@
-#pragma once
+#pragma once	//防止头文件被重复包含
 #define MAX 101
 #define MIN -1
 #define Max_length 50
